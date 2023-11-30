@@ -30,4 +30,4 @@ proc test {num chars} {
     }
 }
 
-test 2 {abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.?! }
+test 10000 {abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.?! }
