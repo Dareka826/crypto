@@ -2,18 +2,23 @@
 set -eu
 
 truncate -s0 hashes.txt
-LINES="10000"
+LINES="100000"
 
-for i in $(seq ${LINES}); do
-    if [ "$(( i % 100 ))" = 0 ]; then
-        printf "[%d/%d = %d%%]\n" "${i}" "${LINES}" "$(( 100 * i / LINES ))"
-    fi
+WAIT_FILE="$(mktemp "${TMPDIR:-/tmp}/wait.XXXX")"
+touch "${WAIT_FILE}"
 
-    RAND="$(dd if=/dev/random count=4 bs=1 2>/dev/null | od -A n -t u)"
-    LEN="$(( RAND % 999 + 1 ))"
+{
+    ./randgen | \
+        head -n "${LINES}" | \
+        xargs -d'\n' -L1 dash -c 'printf "%s" "$1" | ./cchash' '' >hashes.txt
 
-    tr -cd 'a-zA-Z0-9,.?! ' </dev/random | fold -w "${LEN}" | head -n 1 | \
-        xargs -d'\n' -L1 dash -c 'printf "%s" "$1" | ./cchash' '' >>hashes.txt
+    rm "${WAIT_FILE}"
+} &
+
+while [ -e "${WAIT_FILE}" ]; do
+    I="$(wc -l <hashes.txt)"
+    printf "[%d/%d = %d%%]\n" "${I}" "${LINES}" "$(( I * 100 / LINES ))"
+    sleep 1
 done
 
 # Check collisions
