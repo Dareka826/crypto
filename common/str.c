@@ -60,3 +60,14 @@ usize from_str(u8 * const err, usize len, char const * const s) {
 
     return n;
 }
+
+void to_hex_str(u8 b, char s[2]) {
+    u8 bh = (b & 0xF0) >> 4;
+    u8 bl =  b & 0x0F;
+
+    if (bh <= 9) s[0] = bh + '0';
+    else         s[0] = bh - 10 + 'a';
+
+    if (bl <= 9) s[1] = bl + '0';
+    else         s[1] = bl - 10 + 'a';
+}

@@ -20,4 +20,6 @@ enum {
 
 usize from_str(u8 * const err, usize len, char const * const s);
 
+void to_hex_str(u8 b, char s[2]);
+
 #endif
