@@ -95,8 +95,8 @@ int main(int argc, char *argv[]) {
             u8 e;
 
             for (i = 0; i < 2 * 4; i += 1) {
-                hex[0] = argv[2][i*2 + 0];
-                hex[1] = argv[2][i*2 + 1];
+                hex[0] = argv[3][i*2 + 0];
+                hex[1] = argv[3][i*2 + 1];
 
                 nonce_bytes[i] = from_hex_str(&e, hex);
 
