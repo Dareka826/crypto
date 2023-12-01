@@ -32,6 +32,12 @@ int main(int argc, char *argv[]) {
     for (i = 0; i < enc0_len; i += 1)
         enc0_data[i] = 0;
 
+    u8 data_reduced[16 * 4];
+    usize dr_idx = 0;
+
+    for (i = 0; i < 16 * 4; i += 1)
+        data_reduced[i] = 0;
+
     // Encrypt with key = 0, nonce = 0
     {
         u32 key[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -85,8 +91,13 @@ int main(int argc, char *argv[]) {
                 enc0_data[enc0_idx % enc0_len] ^= data_bytes[i];
                 enc0_idx += 1;
 
+                data_reduced[dr_idx % (16 * 4)] ^= data_bytes[i];
+                dr_idx += 1;
+
                 if (enc0_idx >= enc0_len)
                     enc0_idx = enc0_idx % enc0_len;
+                if (dr_idx >= 16 * 4)
+                    dr_idx = dr_idx % (16 * 4);
             }
 
             // Increase counter
@@ -127,7 +138,7 @@ int main(int argc, char *argv[]) {
         for (i = 0; i < 16 * 4; i += 1)
             data_bytes[i] = 0;
         for (i = 0; i < enc0_len; i += 1)
-            data_bytes[i] = enc0_data[i];
+            data_bytes[i] = data_reduced[i];
 
         // Pack
         u32 data[16];
